@@ -1,0 +1,31 @@
+name: Deploy Cloud Functions
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - [master]
+
+      jobs:
+  deploy:
+    name: Deploy Functions
+    runs-on: ubuntu-latest
+    env:
+      REGION: asia-northeast1
+      ENTRY_POINT: hello_pubsub
+      TOPIC: gcf_actions_template
+      NAME: gcf_actions_template
+    steps:
+      - uses: actions/checkout@v2
+      - id: deploy
+        uses: google-github-actions/deploy-cloud-functions@main
+        with:
+          name: ${NAME}
+          runtime: python39
+          credentials: ${{ secrets.gcp_credentials }}
+          entry_point: ${ENTRY_POINT}
+          region: ${REGION}
+          event_trigger_type: providers/cloud.pubsub/eventTypes/topic.publish
+          event_trigger_resource: projects/${{ secrets.gcp_project_id }}/topics/my-pubsub-topic
+          env_vars:
+            - DISCORD_WEBHOOK_URL: ${{ secrets.discord }}
+
