@@ -8,10 +8,6 @@ jobs:
   deploy:
     name: Deploy Functions
     runs-on: ubuntu-latest
-    env:
-      ENTRY_POINT: hello_pubsub
-      TOPIC: gcf_actions_template
-      NAME: gcf_actions_template
     steps:
       - uses: actions/checkout@v2
       - id: deploy
